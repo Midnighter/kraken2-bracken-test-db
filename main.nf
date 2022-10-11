@@ -10,6 +10,7 @@ nextflow.preview.recursion = true
 include { KRAKEN2_BUILD_DOWNLOAD_TAXONOMY } from './modules/local/kraken2_build_download_taxonomy'
 include { PREPARE_BARE_DATABASE } from './modules/local/prepare_bare_database'
 include { KRAKEN2_BRACKEN_DATABASE } from './workflows/local/kraken2_bracken_database'
+include { TAR_ARCHIVE } from './modules/local/tar_archive'
   
 /*****************************************************************************
 * Implicit Main Workflow
@@ -64,4 +65,10 @@ Results Directory: ${params.outdir}
         Channel.fromList(params.read_lengths.split(',').toList())
     )
 
+    def ch_archive_input = KRAKEN2_BRACKEN_DATABASE.out.db
+        .map { meta, kraken, bracken, options ->
+            return [meta, kraken + bracken]
+        }
+
+    TAR_ARCHIVE(ch_archive_input)
 }

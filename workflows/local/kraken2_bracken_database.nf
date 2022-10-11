@@ -59,4 +59,8 @@ workflow KRAKEN2_BRACKEN_DATABASE {
     )
 
     KRAKEN2_BUILD_CLEAN(KRAKEN2_BRACKEN_BUILD.out.db)
+
+    emit:
+
+    db = KRAKEN2_BUILD_CLEAN.out.db
 }

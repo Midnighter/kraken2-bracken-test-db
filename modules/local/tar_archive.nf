@@ -1,64 +1,46 @@
 process TAR_ARCHIVE {
-    tag "$archive"
+    tag "${meta.id}"
     label 'process_single'
 
-    conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
+    conda (params.enable_conda ? "conda-forge::tar=1.32" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-        'ubuntu:20.04' }"
+        'https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv2/biocontainers_v1.2.0_cv2.img' :
+        'biocontainers/biocontainers:v1.2.0_cv2' }"
 
     input:
-    tuple val(meta), path(archive)
+    tuple val(meta), path(files)
 
     output:
-    tuple val(meta), path("$untar"), emit: untar
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path('*.tar.gz'), emit: tar
+    path 'versions.yml'              , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args  = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
-    untar     = archive.toString() - '.tar.gz'
-
+    def args = task.ext.args ?: '--dereference'
+    def prefix = task.ext.prefix ?: meta.id
+    def names = files instanceof List ? files.collect { "'${it}'" }.join(' ') : "'${files}'"
     """
-    mkdir output
-
-    ## Ensures --strip-components only applied when top level of tar contents is a directory
-    ## If just files or multiple directories, place all in output
-    if [[ \$(tar -tzf ${archive} | grep -o -P "^.*?\\/" | uniq | wc -l) -eq 1 ]]; then
-        tar \\
-            -C output --strip-components 1 \\
-            -xzvf \\
-            $args \\
-            $archive \\
-            $args2
-    else
-        tar \\
-            -C output \\
-            -xzvf \\
-            $args \\
-            $archive \\
-            $args2
-    fi
-
-    mv output ${untar}
+    tar ${args} -czf '${prefix}.tar.gz' ${names}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        untar: \$(echo \$(tar --version 2>&1) | sed 's/^.*(GNU tar) //; s/ Copyright.*\$//')
+        tar: \$(echo \$(tar --version 2>&1) | sed 's/^.*(GNU tar) //; s/ Copyright.*\$//')
     END_VERSIONS
     """
 
     stub:
-    untar     = archive.toString() - '.tar.gz'
+    def args = task.ext.args ?: '--dereference'
+    def prefix = task.ext.prefix ?: meta.id
+    def names = files instanceof List ? files.collect { "'${it}'" }.join(' ') : "'${files}'"
     """
-    touch $untar
+    echo tar ${args} -czf '${prefix}.tar.gz' ${names}
+    touch '${prefix}.tar.gz'
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        untar: \$(echo \$(tar --version 2>&1) | sed 's/^.*(GNU tar) //; s/ Copyright.*\$//')
+        tar: \$(echo \$(tar --version 2>&1) | sed 's/^.*(GNU tar) //; s/ Copyright.*\$//')
     END_VERSIONS
     """
 }
