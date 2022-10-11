@@ -8,10 +8,22 @@ process KRAKEN2_BUILD {
         'quay.io/biocontainers/kraken2:2.1.2--pl5321h9f5acd7_2' }"
   
     input:
-    tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), val(options)
+    tuple(
+        val(meta),
+        path(taxonomy, stageAs: 'taxonomy/*'),
+        path(custom_library, stageAs: 'library/added/*'),
+        val(options)
+    )
   
     output:
-    tuple val(meta), path("${prefix}/taxonomy/*"), path("${prefix}/library/added/*"), path("${prefix}/*.{k2d,map}"), val(options), emit: db
+    tuple(
+        val(meta),
+        path("${prefix}/taxonomy/*"),
+        path("${prefix}/library/added/*"),
+        path("${prefix}/*.{k2d,map}"),
+        val(options),
+        emit: db
+    )
   
     when:
     task.ext.when == null || task.ext.when

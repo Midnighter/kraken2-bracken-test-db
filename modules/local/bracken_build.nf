@@ -8,10 +8,26 @@ process BRACKEN_BUILD {
         'quay.io/biocontainers/bracken:2.7--py39hc16433a_0' }"
   
     input:
-    tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), val(options), val(read_lengths)
+    tuple(
+        val(meta),
+        path(taxonomy, stageAs: 'taxonomy/*'),
+        path(custom_library, stageAs: 'library/added/*'),
+        path(kraken, stageAs: 'kraken/*'),
+        val(options),
+        val(read_lengths)
+    )
   
     output:
-    tuple val(meta), path("${prefix}/taxonomy/*", includeInputs: true), path("${prefix}/library/added/*", includeInputs: true), path("${prefix}/*.{k2d,map}", includeInputs: true), val(options), path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths), emit: db
+    tuple(
+        val(meta),
+        path("${prefix}/taxonomy/*", includeInputs: true),
+        path("${prefix}/library/added/*", includeInputs: true),
+        path("${prefix}/*.{k2d,map}", includeInputs: true),
+        val(options),
+        path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true),
+        val(read_lengths),
+        emit: db
+    )
   
     when:
     task.ext.when == null || task.ext.when
