@@ -11,7 +11,7 @@ process BRACKEN_BUILD {
     tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), val(options), val(read_lengths)
   
     output:
-    tuple val(meta), path("${meta.id}/taxonomy/*", includeInputs: true), path("${meta.id}/library/added/*", includeInputs: true), path("${meta.id}/*.{k2d,map}", includeInputs: true), val(options), path("${meta.id}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths)
+    tuple val(meta), path("${meta.id}/taxonomy/*", includeInputs: true), path("${meta.id}/library/added/*", includeInputs: true), path("${meta.id}/*.{k2d,map}", includeInputs: true), val(options), path("${meta.id}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths), emit: db
   
     script:
     def commands = read_lengths.collect { "bracken-build -d '${meta.id}' -t ${task.cpus} -k ${options.kmer_length} -l ${it}" }.join('\n')

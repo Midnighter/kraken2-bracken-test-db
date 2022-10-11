@@ -8,10 +8,10 @@ process KRAKEN2_BUILD_CLEAN {
         'quay.io/biocontainers/kraken2:2.1.2--pl5321h9f5acd7_2' }"
   
     input:
-    tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), path(bracken, stageAs: 'bracken/*'), val(options)
+    tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), val(options), path(bracken, stageAs: 'bracken/*'), val(read_lengths)
   
     output:
-    tuple val(meta), path("${meta.id}/*.k2d"), path("${meta.id}/*.{kmer_distrib,kraken}"), val(options), emit: db
+    tuple val(meta), path("${meta.id}/*.k2d", includeInputs: true), path("${meta.id}/*.{kmer_distrib,kraken}", includeInputs: true), val(options), emit: db
 
     script:
     """

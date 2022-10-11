@@ -58,5 +58,5 @@ workflow KRAKEN2_BRACKEN_DATABASE {
         read_length
     )
 
-    // KRAKEN2_BUILD_CLEAN(KRAKEN2_BRACKEN_BUILD.out.db)
+    KRAKEN2_BUILD_CLEAN(KRAKEN2_BRACKEN_BUILD.out.db)
 }
