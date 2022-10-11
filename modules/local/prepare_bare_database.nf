@@ -13,6 +13,9 @@ process PREPARE_BARE_DATABASE {
     output:
     tuple val(meta), path("${prefix}/taxonomy/*"), emit: taxonomy
   
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     prefix = task.ext.prefix ?: meta.id
     """

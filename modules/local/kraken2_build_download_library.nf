@@ -14,6 +14,9 @@ process KRAKEN2_BUILD_DOWNLOAD_LIBRARY {
     output:
     tuple val(meta), path("${prefix}/library/added/*"), emit: library
   
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     prefix = task.ext.prefix ?: meta.id
     """

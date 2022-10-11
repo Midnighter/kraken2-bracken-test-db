@@ -13,6 +13,9 @@ process KRAKEN2_BUILD {
     output:
     tuple val(meta), path("${prefix}/taxonomy/*"), path("${prefix}/library/added/*"), path("${prefix}/*.{k2d,map}"), val(options), emit: db
   
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     prefix = task.ext.prefix ?: meta.id
     """

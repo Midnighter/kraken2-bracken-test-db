@@ -13,6 +13,9 @@ process BRACKEN_BUILD {
     output:
     tuple val(meta), path("${prefix}/taxonomy/*", includeInputs: true), path("${prefix}/library/added/*", includeInputs: true), path("${prefix}/*.{k2d,map}", includeInputs: true), val(options), path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths), emit: db
   
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     prefix = task.ext.prefix ?: meta.id
     commands = read_lengths.collect { "bracken-build -d '${prefix}' -t ${task.cpus} -k ${options.kmer_length} -l ${it}" }.join('\n')

@@ -13,6 +13,9 @@ process KRAKEN2_BUILD_DOWNLOAD_TAXONOMY {
     output:
     tuple val(meta), path("${prefix}/taxonomy/*"), emit: taxonomy
   
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     prefix = task.ext.prefix ?: meta.id
     """
