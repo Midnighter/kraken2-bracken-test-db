@@ -11,11 +11,12 @@ process PREPARE_BARE_DATABASE {
     tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*')
   
     output:
-    tuple val(meta), path("${meta.id}/taxonomy/*"), emit: taxonomy
+    tuple val(meta), path("${prefix}/taxonomy/*"), emit: taxonomy
   
     script:
+    prefix = task.ext.prefix ?: meta.id
     """
-    mkdir '${meta.id}'
-    mv taxonomy '${meta.id}/'
+    mkdir '${prefix}'
+    mv taxonomy '${prefix}/'
     """
 }

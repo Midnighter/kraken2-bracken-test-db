@@ -11,17 +11,18 @@ process KRAKEN2_BUILD {
     tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), val(options)
   
     output:
-    tuple val(meta), path("${meta.id}/taxonomy/*"), path("${meta.id}/library/added/*"), path("${meta.id}/*.{k2d,map}"), val(options), emit: db
+    tuple val(meta), path("${prefix}/taxonomy/*"), path("${prefix}/library/added/*"), path("${prefix}/*.{k2d,map}"), val(options), emit: db
   
     script:
+    prefix = task.ext.prefix ?: meta.id
     """
-    mkdir '${meta.id}'
-    mv taxonomy '${meta.id}/'
-    mv library '${meta.id}/'
+    mkdir '${prefix}'
+    mv taxonomy '${prefix}/'
+    mv library '${prefix}/'
 
     kraken2-build \\
         --build \\
-        --db '${meta.id}' \\
+        --db '${prefix}' \\
         --threads ${task.cpus} \\
         --kmer-len ${options.kmer_length} \\
         --minimizer-len ${options.minimizer_length} \\

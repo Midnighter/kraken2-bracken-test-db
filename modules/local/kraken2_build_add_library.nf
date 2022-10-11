@@ -12,13 +12,14 @@ process KRAKEN2_BUILD_ADD_LIBRARY {
     path library
   
     output:
-    tuple val(meta), path("${meta.id}/library/added/*"), emit: library
+    tuple val(meta), path("${prefix}/library/added/*"), emit: library
 
     script:
+    prefix = task.ext.prefix ?: meta.id
     """
-    mkdir '${meta.id}'
-    mv taxonomy '${meta.id}/'
+    mkdir '${prefix}'
+    mv taxonomy '${prefix}/'
 
-    kraken2-build --db '${meta.id}' --add-to-library '${library}'
+    kraken2-build --db '${prefix}' --add-to-library '${library}'
     """
 }

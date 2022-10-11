@@ -11,18 +11,19 @@ process KRAKEN2_BUILD_CLEAN {
     tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), val(options), path(bracken, stageAs: 'bracken/*'), val(read_lengths)
   
     output:
-    tuple val(meta), path("${meta.id}/*.k2d", includeInputs: true), path("${meta.id}/*.{kmer_distrib,kraken}", includeInputs: true), val(options), emit: db
+    tuple val(meta), path("${prefix}/*.k2d", includeInputs: true), path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true), val(options), emit: db
 
     script:
+    prefix = task.ext.prefix ?: meta.id
     """
-    mkdir '${meta.id}'
-    mv taxonomy '${meta.id}/'
-    mv library '${meta.id}/'
-    mv kraken/* '${meta.id}/'
-    mv bracken/* '${meta.id}/'
+    mkdir '${prefix}'
+    mv taxonomy '${prefix}/'
+    mv library '${prefix}/'
+    mv kraken/* '${prefix}/'
+    mv bracken/* '${prefix}/'
 
     kraken2-build \\
         --clean \\
-        --db '${meta.id}'
+        --db '${prefix}'
     """
 }

@@ -11,11 +11,11 @@ process KRAKEN2_BUILD_DOWNLOAD_TAXONOMY {
     val meta
   
     output:
-    tuple val(meta), path("${meta.id}/taxonomy/*"), emit: taxonomy
+    tuple val(meta), path("${prefix}/taxonomy/*"), emit: taxonomy
   
     script:
-    result = meta.database
+    prefix = task.ext.prefix ?: meta.id
     """
-    kraken2-build --db "${meta.id}" --download-taxonomy
+    kraken2-build --db "${prefix}" --download-taxonomy
     """
 }

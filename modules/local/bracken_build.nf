@@ -11,15 +11,16 @@ process BRACKEN_BUILD {
     tuple val(meta), path(taxonomy, stageAs: 'taxonomy/*'), path(custom_library, stageAs: 'library/added/*'), path(kraken, stageAs: 'kraken/*'), val(options), val(read_lengths)
   
     output:
-    tuple val(meta), path("${meta.id}/taxonomy/*", includeInputs: true), path("${meta.id}/library/added/*", includeInputs: true), path("${meta.id}/*.{k2d,map}", includeInputs: true), val(options), path("${meta.id}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths), emit: db
+    tuple val(meta), path("${prefix}/taxonomy/*", includeInputs: true), path("${prefix}/library/added/*", includeInputs: true), path("${prefix}/*.{k2d,map}", includeInputs: true), val(options), path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true), val(read_lengths), emit: db
   
     script:
-    def commands = read_lengths.collect { "bracken-build -d '${meta.id}' -t ${task.cpus} -k ${options.kmer_length} -l ${it}" }.join('\n')
+    prefix = task.ext.prefix ?: meta.id
+    commands = read_lengths.collect { "bracken-build -d '${prefix}' -t ${task.cpus} -k ${options.kmer_length} -l ${it}" }.join('\n')
     """
-    mkdir '${meta.id}'
-    mv taxonomy '${meta.id}/'
-    mv library '${meta.id}/'
-    mv kraken/* '${meta.id}/'
+    mkdir '${prefix}'
+    mv taxonomy '${prefix}/'
+    mv library '${prefix}/'
+    mv kraken/* '${prefix}/'
 
     ${commands}
     """
