@@ -52,22 +52,15 @@ workflow KRAKEN2_BRACKEN_BUILD {
 
     def read_lengths = ch_read_length.collect().toList()
 
-    // Create the bracken mappings using combinations of kraken2 build output,
-    // empty Bracken input (to match output for recursion),
+    // Create the bracken mappings using combinations of kraken2 build output
     // and the desired read lengths.
     def ch_bracken_build_input = KRAKEN2_BUILD.out.db
-        .combine([[[]]])  // initially empty Bracken mappings
         .combine(read_lengths)
 
-    def rec_input = ch_bracken_build_input.toList()[0]
 
-    // println rec_input.getClass()
+    BRACKEN_BUILD(ch_bracken_build_input)
 
-    // BRACKEN_BUILD
-        // .recurse(rec_input, 0)
-        // .times(read_lengths.size())
+    emit:
 
-    // emit:
-
-    // db = BRACKEN_BUILD.out.db
+    db = BRACKEN_BUILD.out.db
 }
