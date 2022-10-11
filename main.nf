@@ -1,7 +1,6 @@
 #!/usr/bin/env nextflow
 
 nextflow.enable.dsl = 2
-nextflow.preview.recursion = true
 
 /*****************************************************************************
 * Local Imports
