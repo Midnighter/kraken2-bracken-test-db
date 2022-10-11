@@ -16,10 +16,12 @@ process KRAKEN2_BUILD {
     )
   
     output:
+    // `includeInputs` is not necessary due to files being moved but makes explicit
+    // that we pass through inputs.
     tuple(
         val(meta),
-        path("${prefix}/taxonomy/*"),
-        path("${prefix}/library/added/*"),
+        path("${prefix}/taxonomy/*", includeInputs: true),
+        path("${prefix}/library/added/*", includeInputs: true),
         path("${prefix}/*.{k2d,map}"),
         val(options),
         emit: db

@@ -18,13 +18,15 @@ process BRACKEN_BUILD {
     )
   
     output:
+    // `includeInputs` is not necessary due to files being moved but makes explicit
+    // that we pass through inputs.
     tuple(
         val(meta),
         path("${prefix}/taxonomy/*", includeInputs: true),
         path("${prefix}/library/added/*", includeInputs: true),
         path("${prefix}/*.{k2d,map}", includeInputs: true),
         val(options),
-        path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true),
+        path("${prefix}/*.{kmer_distrib,kraken}"),
         val(read_lengths),
         emit: db
     )

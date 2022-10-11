@@ -19,10 +19,12 @@ process KRAKEN2_BUILD_CLEAN {
     )
   
     output:
+    // `includeInputs` is not necessary due to files being moved but makes explicit
+    // that we pass through inputs.
     tuple(
         val(meta),
-        path("${prefix}/*.k2d"),
-        path("${prefix}/*.{kmer_distrib,kraken}"),
+        path("${prefix}/*.k2d", includeInputs: true),
+        path("${prefix}/*.{kmer_distrib,kraken}", includeInputs: true),
         val(options),
         emit: db
     )
